@@ -1,16 +1,30 @@
+import { useRef, useState } from 'react';
 import './Game.css';
 
 const Game = ({
   pickedWord,
   pickedCategory,
   letters,
-  guess,
+  guesses,
   score,
   guessedLetters,
-  wrongsLettrers,
+  wrongLettrers,
   findLetter,
-
 }) => {
+
+  const [letter, setLetter] = useState("")
+
+  const letterInputRef = useRef(null)
+
+  const handleLeterrs = (e) => {
+    e.preventDefault();
+
+    findLetter(letter);   
+
+    setLetter("");
+
+    letterInputRef.current.focus();
+  }
   return (
     <div className="game">
       <div className="point">
@@ -22,7 +36,7 @@ const Game = ({
         <h3 className="tip"
         >Dica sobre a palavra : <span>{pickedCategory}</span>
         </h3>
-        <p>voce ainda tem {guess} tentativas</p>
+        <p>voce ainda tem {guesses} tentativas</p>
         <div className="wordContainer">
           {letters.map((letter, i) => (
             guessedLetters.includes(letter) ? (
@@ -36,18 +50,26 @@ const Game = ({
         </div>
         <div className="letterContainer">
           <p>Tente advinhar a palavra</p>
-          <form>
-            <input type="text" name="letter" maxLeght="1" required />
-            <button onClick={findLetter}> JOGAR </button>
+          <form onSubmit={handleLeterrs}>
+            <input type="text" 
+            name="letter" 
+            maxLeght="1" 
+            required 
+            onChange={(e) => setLetter(e.target.value)}
+            value={letter}
+            ref={letterInputRef}
+            />
+            <button> JOGAR </button>
           </form>
         </div>
       </div>
       <div>
         <div className="wrongLetterContainer">
-        <span>Letras ja ultilizadas</span>
-          {wrongsLettrers.map((letters, i) => (
-            <span key={i}>{letters}, </span>
-          ))} 
+        <span>Letras ja ultilizadas : </span>
+          {wrongLettrers.map((letter, i) => (            
+            <div key={i}>{letter}</div>
+          ))}
+          {console.log("Form",wrongLettrers)} 
         </div>
       </div>
     </div>
